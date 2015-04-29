@@ -158,18 +158,34 @@ inline double CPerformanceCounter::GetCurTime()
 	return m_flCurrentTime;
 
 #else
+	#ifdef PANDORA
+	struct timespec tp;
+	#else
 	struct timeval	tp;
+	#endif
 	static int	secbase = 0;
     
+    #ifdef PANDORA
+    clock_gettime(CLOCK_MONOTONIC, &tp);
+    #else
 	gettimeofday( &tp, NULL );
+	#endif
  
 	if ( !secbase )
 	{
 		secbase = tp.tv_sec;
+		#ifdef PANDORA
+		return ( tp.tv_nsec / 1000000000.0 );
+		#else
 		return ( tp.tv_usec / 1000000.0 );
+		#endif
 	}
  
+ 	#ifdef PANDORA
+	return ( ( tp.tv_sec - secbase ) + tp.tv_nsec / 1000000000.0 );
+ 	#else
 	return ( ( tp.tv_sec - secbase ) + tp.tv_usec / 1000000.0 );
+	#endif
 #endif /* _WIN32 */
 }
 
