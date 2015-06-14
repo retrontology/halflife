@@ -1,4 +1,4 @@
-#HLSDK server Android port
+#HLSDK server Pandora port
 #Copyright (c) nicknekit
 
 LOCAL_PATH := .
@@ -11,6 +11,10 @@ LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
 	-msoft-float -fno-exceptions -fsigned-char -mcpu=cortex-a8 -mfpu=neon -fPIC -g \
 	-Wno-write-strings -Wno-invalid-offsetof -Wno-endif-labels
+
+ifeq ($(DEMO),1)
+	LOCAL_CFLAGS += -DHLDEMO_BUILD
+endif
 
 LOCAL_CPPFLAGS := $(LOCAL_CFLAGS) -frtti
 
