@@ -30,7 +30,8 @@ LOCAL_C_INCLUDES := -I$(SDL_PATH)/include \
 		    -I$(LOCAL_PATH)/../pm_shared \
 		    -I$(LOCAL_PATH)/../game_shared
 
-LOCAL_SRC_FILES := aflock.cpp \
+DLL_SRC := \
+           aflock.cpp \
            agrunt.cpp \
            airtank.cpp \
            animating.cpp \
@@ -94,7 +95,7 @@ LOCAL_SRC_FILES := aflock.cpp \
            nihilanth.cpp \
            nodes.cpp \
            osprey.cpp \
-	   observer.cpp \
+           observer.cpp \
            pathcorner.cpp \
            plane.cpp \
            plats.cpp \
@@ -127,16 +128,36 @@ LOCAL_SRC_FILES := aflock.cpp \
            weapons.cpp \
            world.cpp \
            xen.cpp \
-           zombie.cpp \
-	   ../pm_shared/pm_debug.c \
-	   ../pm_shared/pm_math.c \
-	   ../pm_shared/pm_shared.c \
+           zombie.cpp
+
+GAME_SRC := \
 	   ../game_shared/voice_gamemgr.cpp
+
+SHARED_SRC := \
+     ../pm_shared/pm_debug.c \
+     ../pm_shared/pm_math.c \
+     ../pm_shared/pm_shared.c
+
 
 #LOCAL_LDLIBS := -llog
 
+OBJ_LOCAL  	:= $(DLL_SRC:.cpp=.o)
+OBJ_GAME 	:= $(GAME_SRC:.cpp=.o)
+OBJ_SHARED  := $(SHARED_SRC:.c=.o)
 #include $(BUILD_SHARED_LIBRARY)
 all: hl.so
 
-hl.so: $(LOCAL_SRC_FILES)
-	gcc -shared -o hl.so $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) $(LOCAL_SRC_FILES)
+hl.so: $(OBJ_LOCAL) $(OBJ_GAME) $(OBJ_SHARED)
+	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $^ -shared -o hl.so 
+
+%.o:  %.c
+	gcc $(LOCAL_CFLAGS) $(LOCAL_C_INCLUDES) -c $< -o $@
+
+%.o:  %.cpp
+	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) -c $< -o $@
+
+.PHONY: clean
+
+clean:
+	rm -rf *.o
+	rm hl.so
