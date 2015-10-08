@@ -927,8 +927,12 @@ int CTalkMonster :: FOkToSpeak( void )
 	// if someone else is talking, don't speak
 	if (gpGlobals->time <= CTalkMonster::g_talkWaitTime)
 		return FALSE;
-
+#ifdef BSHIFT
+	//monster generic can speak always
+	if ( pev->spawnflags & SF_MONSTER_GAG && !FClassnameIs(pev, "monster_generic") )
+#else
 	if ( pev->spawnflags & SF_MONSTER_GAG )
+#endif
 		return FALSE;
 
 	if ( m_MonsterState == MONSTERSTATE_PRONE )

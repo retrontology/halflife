@@ -20,15 +20,23 @@
 #include	"cbase.h"
 #include	"monsters.h"
 #include	"schedule.h"
+#ifdef BSHIFT
+#include	"talkmonster.h"
+#endif
 
 // For holograms, make them not solid so the player can walk through them
 #define	SF_GENERICMONSTER_NOTSOLID					4 
-
+#ifdef BSHIFT
+#define	SF_HEAD_CONTROLLER							8
+#endif
 //=========================================================
 // Monster's Anim Events Go Here
 //=========================================================
-
+#ifdef BSHIFT
+class CGenericMonster : public CTalkMonster
+#else
 class CGenericMonster : public CBaseMonster
+#endif
 {
 public:
 	void Spawn( void );
@@ -119,7 +127,13 @@ void CGenericMonster :: Spawn()
 	m_MonsterState		= MONSTERSTATE_NONE;
 
 	MonsterInit();
+#ifdef BSHIFT
+	if ( pev->spawnflags & SF_HEAD_CONTROLLER )
+	{
+		m_afCapability = bits_CAP_TURN_HEAD;
+	}
 
+#endif
 	if ( pev->spawnflags & SF_GENERICMONSTER_NOTSOLID )
 	{
 		pev->solid = SOLID_NOT;
@@ -132,6 +146,10 @@ void CGenericMonster :: Spawn()
 //=========================================================
 void CGenericMonster :: Precache()
 {
+#ifdef BSHIFT
+	CTalkMonster::Precache();
+	TalkInit();
+#endif
 	PRECACHE_MODEL( (char *)STRING(pev->model) );
 }	
 

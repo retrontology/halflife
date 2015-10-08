@@ -712,7 +712,11 @@ void PlayCDTrack( int iTrack )
 
 	if ( iTrack == -1 )
 	{
+#ifdef BSHIFT
+		CLIENT_COMMAND ( pClient, "cd pause\n");
+#else
 		CLIENT_COMMAND ( pClient, "cd stop\n");
+#endif
 	}
 	else
 	{
@@ -1218,9 +1222,14 @@ void CBaseTrigger::CounterUse( CBaseEntity *pActivator, CBaseEntity *pCaller, US
 		return;
 	
 	BOOL fTellActivator =
+#ifdef BSHIFT
+		(FClassnameIs(m_hActivator->pev, "player") &&
+		!FBitSet(pev->spawnflags, SPAWNFLAG_NOMESSAGE));
+#else
 		(m_hActivator != 0) &&
 		FClassnameIs(m_hActivator->pev, "player") &&
 		!FBitSet(pev->spawnflags, SPAWNFLAG_NOMESSAGE);
+#endif
 	if (m_cTriggersLeft != 0)
 	{
 		if (fTellActivator)
@@ -2428,3 +2437,23 @@ void CTriggerCamera::Move()
 	float fraction = 2 * gpGlobals->frametime;
 	pev->velocity = ((pev->movedir * pev->speed) * fraction) + (pev->velocity * (1-fraction));
 }
+
+#ifdef BSHIFT
+class CTriggerPlayerFreeze : public CBaseDelay
+{
+public:
+	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
+	int ObjectCaps( void ) { return CBaseDelay::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
+};
+LINK_ENTITY_TO_CLASS( trigger_playerfreeze, CTriggerPlayerFreeze );
+
+void CTriggerPlayerFreeze::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
+{
+	if ( !pActivator || !pActivator->IsPlayer() )
+		pActivator = CBaseEntity::Instance(g_engfuncs.pfnPEntityOfEntIndex( 1 ));
+
+		if (pActivator->pev->flags & FL_FROZEN)
+			((CBasePlayer *)((CBaseEntity *)pActivator))->EnableControl(TRUE);
+		else	((CBasePlayer *)((CBaseEntity *)pActivator))->EnableControl(FALSE);
+}
+#endif

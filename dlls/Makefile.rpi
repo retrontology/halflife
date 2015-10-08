@@ -140,16 +140,21 @@ SHARED_SRC := \
      ../pm_shared/pm_shared.c
 
 
-#LOCAL_LDLIBS := -llog
-
 OBJ_LOCAL  	:= $(DLL_SRC:.cpp=.o)
 OBJ_GAME 	:= $(GAME_SRC:.cpp=.o)
 OBJ_SHARED  := $(SHARED_SRC:.c=.o)
-#include $(BUILD_SHARED_LIBRARY)
-all: hl.so
+
+BS_LOCAL  	:= $(DLL_SRC:.cpp=.o_bs)
+BS_GAME 	:= $(GAME_SRC:.cpp=.o_bs)
+BS_SHARED  := $(SHARED_SRC:.c=.o_bs)
+
+all: hl.so hl_bs.so
 
 hl.so: $(OBJ_LOCAL) $(OBJ_GAME) $(OBJ_SHARED)
 	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $^ -shared -o hl.so 
+
+hl_bs.so: $(BS_LOCAL) $(BS_GAME) $(BS_SHARED)
+	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) -DBSHIFT $^ -shared -o hl_bs.so 
 
 %.o:  %.c
 	gcc $(LOCAL_CFLAGS) $(LOCAL_C_INCLUDES) -c $< -o $@
@@ -157,8 +162,14 @@ hl.so: $(OBJ_LOCAL) $(OBJ_GAME) $(OBJ_SHARED)
 %.o:  %.cpp
 	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) -c $< -o $@
 
+%.o_bs:  %.c
+	gcc $(LOCAL_CFLAGS) $(LOCAL_C_INCLUDES) -DBSHIFT -c $< -o $@
+
+%.o_bs:  %.cpp
+	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) -DBSHIFT -c $< -o $@
+
 .PHONY: clean
 
 clean:
-	rm -rf *.o
-	rm hl.so
+	rm -rf *.o *.o_bs
+	rm hl.so hl_bs.so
