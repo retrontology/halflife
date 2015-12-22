@@ -10,8 +10,10 @@ LOCAL_PATH := .
 
 LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
-	-msoft-float -fno-exceptions -fsigned-char -mcpu=cortex-a8 -mfpu=neon -fPIC -g \
+	-mfloat-abi=softfp -fno-exceptions -fsigned-char -mcpu=cortex-a8 -mfpu=neon -fPIC -g \
 	-Wno-write-strings -Wno-invalid-offsetof -Wno-endif-labels
+
+BSHIFT_CFLAGS = -DBSHIFT
 
 ifeq ($(DEMO),1)
 	LOCAL_CFLAGS += -DHLDEMO_BUILD
@@ -154,7 +156,7 @@ hl.so: $(OBJ_LOCAL) $(OBJ_GAME) $(OBJ_SHARED)
 	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $^ -shared -o hl.so 
 
 hl_bs.so: $(BS_LOCAL) $(BS_GAME) $(BS_SHARED)
-	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) -DBSHIFT $^ -shared -o hl_bs.so 
+	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(BSHIFT_CFLAGS) $^ -shared -o hl_bs.so 
 
 %.o:  %.c
 	gcc $(LOCAL_CFLAGS) $(LOCAL_C_INCLUDES) -c $< -o $@
@@ -163,10 +165,10 @@ hl_bs.so: $(BS_LOCAL) $(BS_GAME) $(BS_SHARED)
 	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) -c $< -o $@
 
 %.o_bs:  %.c
-	gcc $(LOCAL_CFLAGS) $(LOCAL_C_INCLUDES) -DBSHIFT -c $< -o $@
+	gcc $(LOCAL_CFLAGS) $(LOCAL_C_INCLUDES) $(BSHIFT_CFLAGS) -c $< -o $@
 
 %.o_bs:  %.cpp
-	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) -DBSHIFT -c $< -o $@
+	g++ $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) $(LOCAL_C_INCLUDES) $(BSHIFT_CFLAGS) -c $< -o $@
 
 .PHONY: clean
 
