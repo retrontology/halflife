@@ -16,6 +16,7 @@
 // sound.cpp 
 //=========================================================
 
+#include <algorithm>
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"

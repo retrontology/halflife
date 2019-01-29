@@ -18,6 +18,7 @@
 // hassassin - Human assassin, fast and stealthy
 //=========================================================
 
+#include        <algorithm>
 #include	"extdll.h"
 #include	"util.h"
 #include	"cbase.h"

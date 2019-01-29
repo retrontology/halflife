@@ -19,7 +19,7 @@
   Utility code.  Really not optional after all.
 
 */
-
+#include <algorithm>
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"

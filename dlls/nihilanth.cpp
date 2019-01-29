@@ -14,6 +14,7 @@
 ****/
 #if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
 
+#include <algorithm>
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"

@@ -16,6 +16,7 @@
 // nodes.cpp - AI node tree stuff.
 //=========================================================
 
+#include        <algorithm>
 #include	"extdll.h"
 #include	"util.h"
 #include	"cbase.h"

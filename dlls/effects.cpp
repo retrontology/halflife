@@ -12,6 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
+#include <algorithm>
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"

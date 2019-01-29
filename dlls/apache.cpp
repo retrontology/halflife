@@ -14,6 +14,7 @@
 ****/
 #ifndef OEM_BUILD
 
+#include <algorithm>
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"
