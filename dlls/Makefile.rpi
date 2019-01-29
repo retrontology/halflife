@@ -10,7 +10,8 @@ LOCAL_PATH := .
 
 LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
-	-mfloat-abi=hard -fno-exceptions -fsigned-char -mcpu=cortex-a7 -mfpu=neon -fPIC -g \
+	-mfloat-abi=hard -fno-exceptions -fsigned-char \
+	-mcpu=cortex-a15 -mtune=cortex-a15.cortex-a7 -mfpu=neon-vfpv4 -fPIC -g \
 	-Wno-write-strings -Wno-invalid-offsetof -Wno-endif-labels
 
 BSHIFT_CFLAGS = -DBSHIFT
